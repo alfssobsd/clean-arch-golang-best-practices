@@ -14,7 +14,7 @@ func NewHeavyProcessorMemoryStore() *heavyProcessorMemoryStore {
 	return &heavyProcessorMemoryStore{numberConfig: rand.Int(), mulock: new(sync.Mutex)}
 }
 
-func (hpms *heavyProcessorMemoryStore) SetNewPolicyMap(newNumberConfig int) {
+func (hpms *heavyProcessorMemoryStore) SetNewNumberConfig(newNumberConfig int) {
 	hpms.mulock.Lock()
 	defer hpms.mulock.Unlock()
 	hpms.numberConfig = newNumberConfig

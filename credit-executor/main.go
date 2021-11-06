@@ -11,7 +11,6 @@ func main() {
 	appConfig := appconfig.NewAppConfigurationFromEnvFile(".env")
 	heavyProcessor, _ := heavyprocessor.NewHeavyProcessor(logger.Sugar(), 10)
 
-	//TODO: обработчик который стопит весь процесс
 	go func() {
 		MakeBackgroundTaskServer(logger.Sugar(), appConfig, heavyProcessor)
 	}()

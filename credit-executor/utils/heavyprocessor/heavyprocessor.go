@@ -31,14 +31,17 @@ func NewHeavyProcessor(logger *zap.SugaredLogger, size int) (*HeavyProcessor, er
 }
 
 func (hp *HeavyProcessor) LoadNewConfigurationForProcessor(number int) error {
-	_ = hp.LoadNewConfigurationForProcessor(number)
+	hp.logger.Infof("Set new number config to store %d", number)
+	hp.store.SetNewNumberConfig(number)
 	return nil
 }
 
 func (hp *HeavyProcessor) ExecuteProcessor(number int) error {
 	hp.logger.Infof("Execute task with number %d", number)
+	hp.logger.Infof("Pool status idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 	processorItem, err := hp.pool.getProcessorItemFromPool()
 	if err != nil {
+		hp.logger.Errorf("No free processor idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 		return err
 	}
 	defer hp.pool.receiveProcessorItemToPool(processorItem)

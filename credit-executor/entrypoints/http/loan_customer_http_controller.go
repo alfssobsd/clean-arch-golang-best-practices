@@ -33,7 +33,7 @@ func (c *LoanCustomerHttpController) makeRoutes() {
 	v1 := c.echoServer.Group("/api/v1/loan-customer")
 
 	v1.POST("/create-request-for-loan", c.createRequestForLoan)
-	v1.POST("/check-loan-request-status", c.checkLoanRequestStatus)
+	v1.GET("/check-loan-request-status", c.checkLoanRequestStatus)
 }
 
 func (c *LoanCustomerHttpController) createRequestForLoan(ctx echo.Context) error {

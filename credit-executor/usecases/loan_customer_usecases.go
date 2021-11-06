@@ -32,6 +32,7 @@ func NewLoanCustomerUseCase(logger *zap.SugaredLogger, heavyProcessor *heavyproc
 }
 
 func (uc *LoanCustomerUseCase) CreateRequestForLoan() {
+	uc.logger.Infof("LoanCustomerUseCase.CreateRequestForLoan")
 	_ = uc.heavyProcessor.ExecuteProcessor(rand.Int())
 	uc.loanRepo.CreateRequestLoan()
 	apiDto, _ := uc.agifyApiGateway.PredicateAgeOfName("vasily", "RU")
@@ -39,6 +40,7 @@ func (uc *LoanCustomerUseCase) CreateRequestForLoan() {
 }
 
 func (uc *LoanCustomerUseCase) CheckLoanRequestStatus() {
+	uc.logger.Infof("LoanCustomerUseCase.CheckLoanRequestStatus")
 	_ = uc.heavyProcessor.ExecuteProcessor(rand.Int())
 	uc.loanRepo.CheckRequestLoan()
 }

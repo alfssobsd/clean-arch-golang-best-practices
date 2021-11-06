@@ -16,7 +16,7 @@ func (hppi *heavyProcessorPoolItem) GetID() int {
 }
 
 func (hppi *heavyProcessorPoolItem) Execute() {
-	time.Sleep(time.Second * 90)
+	time.Sleep(time.Millisecond * 300)
 }
 
 type heavyProcessorPool struct {

@@ -18,19 +18,16 @@ type ILoanRepository interface {
 
 func NewLoanRepository(logger *zap.SugaredLogger, dbConfig appconfig.DatabaseConfiguration) *LoanRepository {
 	return &LoanRepository{
-		logger:       logger,
+		logger: logger,
 		//просто заглушка, в реально жизни сюда уже pgConnect приходит
 		dbConnection: fmt.Sprintf("%s,%s,%s", dbConfig.Username, dbConfig.Host, dbConfig.Password),
 	}
 }
 
 func (repo *LoanRepository) CreateRequestLoan() {
-	panic("implement me")
+	repo.logger.Infof("LoanRepository.CreateRequestLoan")
 }
 
 func (repo *LoanRepository) CheckRequestLoan() {
-	panic("implement me")
+	repo.logger.Infof("LoanRepository.CheckRequestLoan")
 }
-
-
-
