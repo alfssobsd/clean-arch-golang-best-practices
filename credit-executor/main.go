@@ -2,8 +2,8 @@ package main
 
 import (
 	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
-	"clean-arch-golang-best-practices/credit-executor/utils/heavyprocessor"
 	"clean-arch-golang-best-practices/credit-library/loggerhelper"
+	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
 )
 
 func main() {

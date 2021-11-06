@@ -4,7 +4,7 @@ import (
 	"clean-arch-golang-best-practices/credit-executor/entrypoints/background"
 	"clean-arch-golang-best-practices/credit-executor/usecases"
 	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
-	"clean-arch-golang-best-practices/credit-executor/utils/heavyprocessor"
+	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
 	"go.uber.org/zap"
 	"os"
 	"time"

@@ -1,7 +1,6 @@
 package main_db_provider
 
 import (
-	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
 	"fmt"
 	"go.uber.org/zap"
 )
@@ -16,7 +15,7 @@ type ILoanRepository interface {
 	CheckRequestLoan()
 }
 
-func NewLoanRepository(logger *zap.SugaredLogger, dbConfig appconfig.DatabaseConfiguration) *LoanRepository {
+func NewLoanRepository(logger *zap.SugaredLogger, dbConfig DatabaseConfiguration) *LoanRepository {
 	return &LoanRepository{
 		logger: logger,
 		//просто заглушка, в реально жизни сюда уже pgConnect приходит

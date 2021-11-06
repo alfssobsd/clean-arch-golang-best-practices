@@ -2,12 +2,12 @@ package main
 
 import (
 	"clean-arch-golang-best-practices/credit-executor/dataproviders/agify_api_gateway"
-	"clean-arch-golang-best-practices/credit-executor/dataproviders/main_db_provider"
 	httpcontroller "clean-arch-golang-best-practices/credit-executor/entrypoints/http"
 	"clean-arch-golang-best-practices/credit-executor/usecases"
 	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
-	"clean-arch-golang-best-practices/credit-executor/utils/heavyprocessor"
 	"clean-arch-golang-best-practices/credit-library/echohelper"
+	"clean-arch-golang-best-practices/credit-shared-module/dataproviders/main_db_provider"
+	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
 	"fmt"
 	echoPrometheus "github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
@@ -20,7 +20,7 @@ func MakeHttpServer(logger *zap.Logger, appConfig *appconfig.AppConfiguration, h
 
 	_ = httpcontroller.NewLoanCustomerHttpController(logger.Sugar(), echoServer,
 		usecases.NewLoanCustomerUseCase(logger.Sugar(), heavyProcessor, agify_api_gateway.NewAgifyApiGateway(logger.Sugar()),
-			main_db_provider.NewLoanRepository(logger.Sugar(), appConfig.GetDatabaseConfig())))
+			main_db_provider.NewLoanRepository(logger.Sugar(), appConfig.GetDatabaseConfigForDbProvider())))
 
 	zap.S().Infof("Server start HTTP Server %s:%d", appConfig.GetHttpServerConfig().Host, appConfig.GetHttpServerConfig().Port)
 	err := echoServer.Start(fmt.Sprintf(":%d", appConfig.GetHttpServerConfig().Port))

@@ -1,7 +1,7 @@
 package usecases
 
 import (
-	"clean-arch-golang-best-practices/credit-executor/utils/heavyprocessor"
+	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
 	"go.uber.org/zap"
 	"math/rand"
 )
@@ -14,9 +14,10 @@ type SystemUseCase struct {
 type ISystemUseCase interface {
 	UpdateHeavyProcessorConfiguration() error
 }
+
 func NewSystemUseCase(logger *zap.SugaredLogger, heavyProcessor *heavyprocessor.HeavyProcessor) *SystemUseCase {
 	uc := SystemUseCase{
-		logger:     logger,
+		logger:         logger,
 		heavyProcessor: heavyProcessor,
 	}
 	return &uc

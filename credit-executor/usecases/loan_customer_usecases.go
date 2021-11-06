@@ -2,8 +2,8 @@ package usecases
 
 import (
 	"clean-arch-golang-best-practices/credit-executor/dataproviders/agify_api_gateway"
-	"clean-arch-golang-best-practices/credit-executor/dataproviders/main_db_provider"
-	"clean-arch-golang-best-practices/credit-executor/utils/heavyprocessor"
+	"clean-arch-golang-best-practices/credit-shared-module/dataproviders/main_db_provider"
+	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
 	"go.uber.org/zap"
 	"math/rand"
 )

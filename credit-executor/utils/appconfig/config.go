@@ -2,6 +2,7 @@ package appconfig
 
 import (
 	"clean-arch-golang-best-practices/credit-library/viperhelper"
+	"clean-arch-golang-best-practices/credit-shared-module/dataproviders/main_db_provider"
 	"github.com/spf13/viper"
 )
 
@@ -32,6 +33,14 @@ func NewAppConfigurationFromEnvFile(pathToEnvFile string) *AppConfiguration {
 
 func (c *AppConfiguration) GetDatabaseConfig() DatabaseConfiguration {
 	return c.database
+}
+func (c *AppConfiguration) GetDatabaseConfigForDbProvider() main_db_provider.DatabaseConfiguration {
+	return main_db_provider.DatabaseConfiguration{
+		Username: c.database.Username,
+		Password: c.database.Password,
+		Host:     c.database.Host,
+		PoolSize: 10,
+	}
 }
 
 func (c *AppConfiguration) GetSentryConfig() SentryConfiguration {
