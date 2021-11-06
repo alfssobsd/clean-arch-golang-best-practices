@@ -1,4 +1,4 @@
-package http
+package http_controllers
 
 import (
 	"clean-arch-golang-best-practices/credit-executor/usecases"
