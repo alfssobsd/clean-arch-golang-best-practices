@@ -7,21 +7,30 @@ import (
 	"clean-arch-golang-best-practices/credit-executor/usecases"
 	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
 	"clean-arch-golang-best-practices/credit-executor/utils/heavyprocessor"
+	"clean-arch-golang-best-practices/credit-library/echohelper"
 	"fmt"
+	echoPrometheus "github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
-func MakeHttpServer(logger *zap.SugaredLogger, appConfig *appconfig.AppConfiguration, heavyProcessor *heavyprocessor.HeavyProcessor) {
+func MakeHttpServer(logger *zap.Logger, appConfig *appconfig.AppConfiguration, heavyProcessor *heavyprocessor.HeavyProcessor) {
 	echoServer := echo.New()
+	setupEchoMiddlewares(echoServer, logger)
 
-	_ = httpcontroller.NewLoanCustomerHttpController(logger, echoServer,
-		usecases.NewLoanCustomerUseCase(logger, heavyProcessor, agify_api_gateway.NewAgifyApiGateway(logger),
-			main_db_provider.NewLoanRepository(logger, appConfig.GetDatabaseConfig())))
+	_ = httpcontroller.NewLoanCustomerHttpController(logger.Sugar(), echoServer,
+		usecases.NewLoanCustomerUseCase(logger.Sugar(), heavyProcessor, agify_api_gateway.NewAgifyApiGateway(logger.Sugar()),
+			main_db_provider.NewLoanRepository(logger.Sugar(), appConfig.GetDatabaseConfig())))
 
 	zap.S().Infof("Server start HTTP Server %s:%d", appConfig.GetHttpServerConfig().Host, appConfig.GetHttpServerConfig().Port)
 	err := echoServer.Start(fmt.Sprintf(":%d", appConfig.GetHttpServerConfig().Port))
 	if err != nil {
 		zap.S().Fatalf("HTTP Server error %v", err)
 	}
+}
+
+func setupEchoMiddlewares(echoServer *echo.Echo, logger *zap.Logger) {
+	echoServer.Use(echohelper.EchoZapLogger(logger))
+	prometheus := echoPrometheus.NewPrometheus("http_app_server", nil)
+	prometheus.Use(echoServer)
 }

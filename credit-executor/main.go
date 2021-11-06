@@ -14,5 +14,5 @@ func main() {
 	go func() {
 		MakeBackgroundTaskServer(logger.Sugar(), appConfig, heavyProcessor)
 	}()
-	MakeHttpServer(logger.Sugar(), appConfig, heavyProcessor)
+	MakeHttpServer(logger, appConfig, heavyProcessor)
 }

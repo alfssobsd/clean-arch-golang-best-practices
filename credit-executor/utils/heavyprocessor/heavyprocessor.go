@@ -44,7 +44,13 @@ func (hp *HeavyProcessor) ExecuteProcessor(number int) error {
 		hp.logger.Errorf("No free processor idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 		return err
 	}
-	defer hp.pool.receiveProcessorItemToPool(processorItem)
+	defer func(pool *heavyProcessorPool, target *heavyProcessorPoolItem) {
+		errR := pool.receiveProcessorItemToPool(target)
+		if errR != nil {
+			hp.logger.Error(errR)
+		}
+	}(hp.pool, processorItem)
+
 	hp.logger.Infof("User processor id = %d and configNumber = %d", processorItem.GetID(), hp.store.GetNumberConfig())
 	processorItem.Execute()
 
