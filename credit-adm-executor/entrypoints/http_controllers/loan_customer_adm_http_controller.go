@@ -38,7 +38,10 @@ func (c *LoanCustomerAdmHttpController) makeRoutes() {
 
 func (c *LoanCustomerAdmHttpController) calculateRating(ctx echo.Context) error {
 	c.logger.Infof("Calculate Rating")
-	result := c.loanCustomerAdmUseCase.CalculateRatingByRequest(rand.Int())
+	ucResult := c.loanCustomerAdmUseCase.CalculateRatingByRequest(rand.Int())
 
-	return ctx.JSON(http.StatusCreated, result)
+	response := CalculateRatingHttpResponse{}
+	response.SetFromLoanCustomerRatingOutDto(ucResult)
+
+	return ctx.JSON(http.StatusCreated, response)
 }

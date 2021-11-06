@@ -9,5 +9,6 @@ func main() {
 	logger := loggerhelper.MakeNewZapProductionLogger()
 	appConfig := appconfig.NewAppConfigurationFromEnvFile(".env")
 
+	logger.Info("Run credit-adm-executor")
 	MakeHttpServer(logger, appConfig)
 }

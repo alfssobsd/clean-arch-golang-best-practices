@@ -11,6 +11,7 @@ func main() {
 	appConfig := appconfig.NewAppConfigurationFromEnvFile(".env")
 	heavyProcessor, _ := heavyprocessor.NewHeavyProcessor(logger.Sugar(), 10)
 
+	logger.Info("Run credit-executor")
 	go func() {
 		MakeBackgroundTaskServer(logger.Sugar(), appConfig, heavyProcessor)
 	}()
