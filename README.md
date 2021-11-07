@@ -43,6 +43,7 @@ credit-executor/utils/appconfig/config.go
 ```
 
 ### Использование мютексов и пулов ресурсов
+Так же стоит обратить внимание как сделан фасад
 ```
 credit-shared-module/utils/heavyprocessor
 ```
