@@ -8,14 +8,14 @@ import (
 
 type SystemUseCase struct {
 	logger         *zap.SugaredLogger
-	heavyProcessor *heavyprocessor.HeavyProcessor
+	heavyProcessor heavyprocessor.IHeavyProcessor
 }
 
 type ISystemUseCase interface {
 	UpdateHeavyProcessorConfiguration() error
 }
 
-func NewSystemUseCase(logger *zap.SugaredLogger, heavyProcessor *heavyprocessor.HeavyProcessor) *SystemUseCase {
+func NewSystemUseCase(logger *zap.SugaredLogger, heavyProcessor heavyprocessor.IHeavyProcessor) ISystemUseCase {
 	uc := SystemUseCase{
 		logger:         logger,
 		heavyProcessor: heavyProcessor,

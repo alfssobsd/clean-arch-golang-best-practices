@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func MakeHttpServer(logger *zap.Logger, appConfig *appconfig.AppConfiguration, heavyProcessor *heavyprocessor.HeavyProcessor) {
+func MakeHttpServer(logger *zap.Logger, appConfig *appconfig.AppConfiguration, heavyProcessor heavyprocessor.IHeavyProcessor) {
 	echoServer := echo.New()
 	setupEchoMiddlewares(echoServer, logger)
 

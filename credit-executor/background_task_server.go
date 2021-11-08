@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func MakeBackgroundTaskServer(logger *zap.SugaredLogger, appConfig *appconfig.AppConfiguration, heavyProcessor *heavyprocessor.HeavyProcessor) {
+func MakeBackgroundTaskServer(logger *zap.SugaredLogger, appConfig *appconfig.AppConfiguration, heavyProcessor heavyprocessor.IHeavyProcessor) {
 
 	errorChain := make(chan error, 1)
 

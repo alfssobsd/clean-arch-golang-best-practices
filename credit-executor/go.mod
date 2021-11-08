@@ -49,4 +49,5 @@ require (
 )
 
 replace clean-arch-golang-best-practices/credit-shared-module => ../credit-shared-module
+
 replace clean-arch-golang-best-practices/credit-library => ../credit-library

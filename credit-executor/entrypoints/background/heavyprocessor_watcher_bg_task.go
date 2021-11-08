@@ -10,7 +10,7 @@ import (
 type HeavyProcessorWatcherBackgroundTask struct {
 	watcherId     int
 	logger        *zap.SugaredLogger
-	systemUseCase *usecases.SystemUseCase
+	systemUseCase usecases.ISystemUseCase
 	waitTimeout   time.Duration
 }
 
@@ -18,7 +18,7 @@ type IHeavyProcessorWatcherBackgroundTask interface {
 	RunTask() error
 }
 
-func NewHeavyProcessorWatcherBackgroundTask(logger *zap.SugaredLogger, systemUseCase *usecases.SystemUseCase, waitTimeout time.Duration) *HeavyProcessorWatcherBackgroundTask {
+func NewHeavyProcessorWatcherBackgroundTask(logger *zap.SugaredLogger, systemUseCase usecases.ISystemUseCase, waitTimeout time.Duration) IHeavyProcessorWatcherBackgroundTask {
 	return &HeavyProcessorWatcherBackgroundTask{watcherId: rand.Int(), logger: logger, systemUseCase: systemUseCase, waitTimeout: waitTimeout}
 }
 

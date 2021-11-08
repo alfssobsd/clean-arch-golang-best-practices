@@ -12,14 +12,14 @@ type LoanCustomerHttpController struct {
 	logger              *zap.SugaredLogger
 	echoServer          *echo.Echo
 	appConfig           *appconfig.AppConfiguration
-	loanCustomerUseCase *usecases.LoanCustomerUseCase
+	loanCustomerUseCase usecases.ILoanCustomerUseCase
 }
 
 type ILoanCustomerHttpController interface {
 	makeRoutes()
 }
 
-func NewLoanCustomerHttpController(logger *zap.SugaredLogger, echoServer *echo.Echo, loanCustomerUseCase *usecases.LoanCustomerUseCase) *LoanCustomerHttpController {
+func NewLoanCustomerHttpController(logger *zap.SugaredLogger, echoServer *echo.Echo, loanCustomerUseCase usecases.ILoanCustomerUseCase) ILoanCustomerHttpController {
 	controller := LoanCustomerHttpController{
 		logger:              logger,
 		echoServer:          echoServer,

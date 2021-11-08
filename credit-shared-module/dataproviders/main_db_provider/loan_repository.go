@@ -16,7 +16,7 @@ type ILoanRepository interface {
 	CheckRequestLoan()
 }
 
-func NewLoanRepository(logger *zap.SugaredLogger, dbConfig DatabaseConfiguration) *LoanRepository {
+func NewLoanRepository(logger *zap.SugaredLogger, dbConfig DatabaseConfiguration) ILoanRepository {
 	return &LoanRepository{
 		logger: logger,
 		//просто заглушка, в реальной жизни сюда уже pgConnect приходит

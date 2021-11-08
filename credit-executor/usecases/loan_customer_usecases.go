@@ -10,8 +10,8 @@ import (
 
 type LoanCustomerUseCase struct {
 	logger          *zap.SugaredLogger
-	heavyProcessor  *heavyprocessor.HeavyProcessor
-	loanRepo        *main_db_provider.LoanRepository
+	heavyProcessor  heavyprocessor.IHeavyProcessor
+	loanRepo        main_db_provider.ILoanRepository
 	agifyApiGateway *agify_api_gateway.AgifyApiGateway
 }
 
@@ -20,8 +20,8 @@ type ILoanCustomerUseCase interface {
 	CheckLoanRequestStatus()
 }
 
-func NewLoanCustomerUseCase(logger *zap.SugaredLogger, heavyProcessor *heavyprocessor.HeavyProcessor,
-	agifyApiGateway *agify_api_gateway.AgifyApiGateway, loanRepo *main_db_provider.LoanRepository) *LoanCustomerUseCase {
+func NewLoanCustomerUseCase(logger *zap.SugaredLogger, heavyProcessor heavyprocessor.IHeavyProcessor,
+	agifyApiGateway *agify_api_gateway.AgifyApiGateway, loanRepo main_db_provider.ILoanRepository) ILoanCustomerUseCase {
 	uc := LoanCustomerUseCase{
 		logger:          logger,
 		heavyProcessor:  heavyProcessor,

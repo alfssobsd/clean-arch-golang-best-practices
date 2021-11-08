@@ -11,10 +11,10 @@ type CreditRatingDomain struct {
 }
 
 type ICreditRatingDomain interface {
-	CalculateCreditRating(age int, annualIncomeMicros int64) int
+	CalculateCreditRating(dateOfBirth time.Time, annualIncomeMicros int64) int
 }
 
-func NewCreditRatingDomain(logger *zap.SugaredLogger) *CreditRatingDomain {
+func NewCreditRatingDomain(logger *zap.SugaredLogger) ICreditRatingDomain {
 	return &CreditRatingDomain{logger: logger}
 }
 
