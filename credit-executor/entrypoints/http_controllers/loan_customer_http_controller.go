@@ -3,13 +3,13 @@ package http_controllers
 import (
 	"clean-arch-golang-best-practices/credit-executor/usecases"
 	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
+	"clean-arch-golang-best-practices/credit-library/loggerhelper"
 	"github.com/labstack/echo/v4"
-	"go.uber.org/zap"
 	"net/http"
 )
 
 type LoanCustomerHttpController struct {
-	logger              *zap.SugaredLogger
+	logger              *loggerhelper.CustomLogger
 	echoServer          *echo.Echo
 	appConfig           *appconfig.AppConfiguration
 	loanCustomerUseCase usecases.ILoanCustomerUseCase
@@ -19,7 +19,7 @@ type ILoanCustomerHttpController interface {
 	makeRoutes()
 }
 
-func NewLoanCustomerHttpController(logger *zap.SugaredLogger, echoServer *echo.Echo, loanCustomerUseCase usecases.ILoanCustomerUseCase) ILoanCustomerHttpController {
+func NewLoanCustomerHttpController(logger *loggerhelper.CustomLogger, echoServer *echo.Echo, loanCustomerUseCase usecases.ILoanCustomerUseCase) ILoanCustomerHttpController {
 	controller := LoanCustomerHttpController{
 		logger:              logger,
 		echoServer:          echoServer,
@@ -37,15 +37,15 @@ func (c *LoanCustomerHttpController) makeRoutes() {
 }
 
 func (c *LoanCustomerHttpController) createRequestForLoan(ctx echo.Context) error {
-	c.logger.Infof("Create request for loan")
-	c.loanCustomerUseCase.CreateRequestForLoan()
+	c.logger.InfoWithTracing(ctx.Request().Context(), "Create request for loan")
+	c.loanCustomerUseCase.CreateRequestForLoan(ctx.Request().Context())
 
 	return ctx.JSON(http.StatusCreated, "CREATED")
 }
 
 func (c *LoanCustomerHttpController) checkLoanRequestStatus(ctx echo.Context) error {
-	c.logger.Infof("Check loan request status")
-	c.loanCustomerUseCase.CheckLoanRequestStatus()
+	c.logger.InfofWithTracing(ctx.Request().Context(), "Check loan request status")
+	c.loanCustomerUseCase.CheckLoanRequestStatus(ctx.Request().Context())
 
 	return ctx.JSON(http.StatusOK, "IN PROGRESS")
 }

@@ -1,24 +1,26 @@
 package domain
 
 import (
-	"go.uber.org/zap"
+	"clean-arch-golang-best-practices/credit-library/loggerhelper"
+	"context"
 	"math"
 	"time"
 )
 
 type CreditRatingDomain struct {
-	logger *zap.SugaredLogger
+	logger *loggerhelper.CustomLogger
 }
 
 type ICreditRatingDomain interface {
-	CalculateCreditRating(dateOfBirth time.Time, annualIncomeMicros int64) int
+	CalculateCreditRating(ctx context.Context, dateOfBirth time.Time, annualIncomeMicros int64) int
 }
 
-func NewCreditRatingDomain(logger *zap.SugaredLogger) ICreditRatingDomain {
+func NewCreditRatingDomain(logger *loggerhelper.CustomLogger) ICreditRatingDomain {
 	return &CreditRatingDomain{logger: logger}
 }
 
-func (crd CreditRatingDomain) CalculateCreditRating(dateOfBirth time.Time, annualIncomeMicros int64) int {
+func (crd CreditRatingDomain) CalculateCreditRating(ctx context.Context, dateOfBirth time.Time, annualIncomeMicros int64) int {
+	crd.logger.InfofWithTracing(ctx, "CreditRatingDomain.CalculateCreditRating")
 	today := time.Now()
 	age := math.Floor(today.Sub(dateOfBirth).Hours() / 24 / 365)
 	return int(math.Sqrt(age) - (float64(annualIncomeMicros)/12)*0.3)

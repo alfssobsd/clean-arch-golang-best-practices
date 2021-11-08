@@ -1,22 +1,23 @@
 package usecases
 
 import (
+	"clean-arch-golang-best-practices/credit-library/loggerhelper"
 	"clean-arch-golang-best-practices/credit-shared-module/dataproviders/main_db_provider"
 	"clean-arch-golang-best-practices/credit-shared-module/domain"
-	"go.uber.org/zap"
+	"context"
 )
 
 type LoanCustomerAdmUseCase struct {
-	logger             *zap.SugaredLogger
-	creditRatingDomain *domain.CreditRatingDomain
-	loanRepo           *main_db_provider.LoanRepository
+	logger             *loggerhelper.CustomLogger
+	creditRatingDomain domain.ICreditRatingDomain
+	loanRepo           main_db_provider.ILoanRepository
 }
 
 type ILoanCustomerAdmUseCase interface {
-	CalculateRatingByRequest(requestId int)
+	CalculateRatingByRequest(ctx context.Context, requestId int)
 }
 
-func NewLoanCustomerAdmUseCase(logger *zap.SugaredLogger, creditRatingDomain *domain.CreditRatingDomain, loanRepo *main_db_provider.LoanRepository) *LoanCustomerAdmUseCase {
+func NewLoanCustomerAdmUseCase(logger *loggerhelper.CustomLogger, creditRatingDomain domain.ICreditRatingDomain, loanRepo main_db_provider.ILoanRepository) *LoanCustomerAdmUseCase {
 	uc := LoanCustomerAdmUseCase{
 		logger:             logger,
 		creditRatingDomain: creditRatingDomain,
@@ -25,10 +26,10 @@ func NewLoanCustomerAdmUseCase(logger *zap.SugaredLogger, creditRatingDomain *do
 	return &uc
 }
 
-func (uc *LoanCustomerAdmUseCase) CalculateRatingByRequest(requestId int) LoanCustomerRatingOutDto {
-	uc.logger.Infof("LoanCustomerAdmUseCase.CalculateRatingByRequest")
-	loanRequestModel := uc.loanRepo.GetRequestLoanByID(requestId)
-	rating := uc.creditRatingDomain.CalculateCreditRating(loanRequestModel.BorrowerDateOfBirth, loanRequestModel.AnnualIncomeMicros)
+func (uc *LoanCustomerAdmUseCase) CalculateRatingByRequest(ctx context.Context, requestId int) LoanCustomerRatingOutDto {
+	uc.logger.InfofWithTracing(ctx, "LoanCustomerAdmUseCase.CalculateRatingByRequest")
+	loanRequestModel := uc.loanRepo.GetRequestLoanByID(ctx, requestId)
+	rating := uc.creditRatingDomain.CalculateCreditRating(ctx, loanRequestModel.BorrowerDateOfBirth, loanRequestModel.AnnualIncomeMicros)
 
 	return LoanCustomerRatingOutDto{Rating: rating, RequestId: requestId}
 }

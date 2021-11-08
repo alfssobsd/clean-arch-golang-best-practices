@@ -1,4 +1,4 @@
-package echohelper
+package loggerhelper
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func EchoZapLogger(log *zap.Logger) echo.MiddlewareFunc {
+func EchoCustomLogger(log *CustomLogger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			startAt := time.Now()
@@ -35,11 +35,11 @@ func EchoZapLogger(log *zap.Logger) echo.MiddlewareFunc {
 			logString := fmt.Sprintf("%s %s %s status=%d", request.Method, request.RequestURI, request.Proto, statusCode)
 			switch {
 			case statusCode >= 500:
-				log.Error(logString, zapFields...)
+				log.ErrorWithTracing(c.Request().Context(), logString, zapFields...)
 			case statusCode >= 400:
-				log.Warn(logString, zapFields...)
+				log.WarnWithTracing(c.Request().Context(), logString, zapFields...)
 			default:
-				log.Info(logString, zapFields...)
+				log.InfoWithTracing(c.Request().Context(), logString, zapFields...)
 			}
 
 			return nil

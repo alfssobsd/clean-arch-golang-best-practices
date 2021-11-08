@@ -28,6 +28,13 @@ func NewAppConfigurationFromEnvFile(pathToEnvFile string) *AppConfiguration {
 		Host: viper.GetString("SERVER_HTTP_HOST"),
 		Port: viper.GetInt("SERVER_HTTP_PORT"),
 	}
+	appConfig.redis = RedisConfiguration{
+		Host:     viper.GetString("REDIS_HOST"),
+		Port:     viper.GetInt("REDIS_PORT"),
+		Password: viper.GetString("REDIS_PASSWORD"),
+		Database: viper.GetInt("REDIS_DB"),
+		PoolSize: viper.GetInt("REDIS_POOL_SIZE"),
+	}
 	return &appConfig
 }
 
@@ -49,4 +56,8 @@ func (c *AppConfiguration) GetSentryConfig() SentryConfiguration {
 
 func (c *AppConfiguration) GetHttpServerConfig() HttpServerConfiguration {
 	return c.httpServer
+}
+
+func (c *AppConfiguration) GetRedisConfig() RedisConfiguration {
+	return c.redis
 }

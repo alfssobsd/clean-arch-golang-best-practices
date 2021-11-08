@@ -1,23 +1,24 @@
 package heavyprocessor
 
 import (
-	"go.uber.org/zap"
+	"clean-arch-golang-best-practices/credit-library/loggerhelper"
+	"context"
 )
 
 type HeavyProcessor struct {
 	configNumber int
-	logger       *zap.SugaredLogger
+	logger       *loggerhelper.CustomLogger
 	pool         *heavyProcessorPool
 	store        *heavyProcessorMemoryStore
 }
 
 type IHeavyProcessor interface {
-	ExecuteProcessor(number int) error
-	LoadNewConfigurationForProcessor(number int) error
+	ExecuteProcessor(ctx context.Context, number int) error
+	LoadNewConfigurationForProcessor(ctx context.Context, number int) error
 }
 
-func NewHeavyProcessor(logger *zap.SugaredLogger, size int) (*HeavyProcessor, error) {
-	logger.Infof("Create new pool for heavyprocessor (size %d)", size)
+func NewHeavyProcessor(logger *loggerhelper.CustomLogger, size int) (*HeavyProcessor, error) {
+	logger.InfofNoTracing("Create new pool for heavyprocessor (size %d)", size)
 	pool, err := newHeavyProcessorPool(size)
 	if err != nil {
 		return nil, err
@@ -30,28 +31,28 @@ func NewHeavyProcessor(logger *zap.SugaredLogger, size int) (*HeavyProcessor, er
 	}, nil
 }
 
-func (hp *HeavyProcessor) LoadNewConfigurationForProcessor(number int) error {
-	hp.logger.Infof("Set new number config to store %d", number)
+func (hp *HeavyProcessor) LoadNewConfigurationForProcessor(ctx context.Context, number int) error {
+	hp.logger.InfofWithTracing(ctx, "Set new number config to store %d", number)
 	hp.store.SetNewNumberConfig(number)
 	return nil
 }
 
-func (hp *HeavyProcessor) ExecuteProcessor(number int) error {
-	hp.logger.Infof("Execute task with number %d", number)
-	hp.logger.Infof("Pool status idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
+func (hp *HeavyProcessor) ExecuteProcessor(ctx context.Context, number int) error {
+	hp.logger.InfofWithTracing(ctx, "Execute task with number %d", number)
+	hp.logger.InfofWithTracing(ctx, "Pool status idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 	processorItem, err := hp.pool.getProcessorItemFromPool()
 	if err != nil {
-		hp.logger.Errorf("No free processor idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
+		hp.logger.ErrorfWithTracing(ctx, "No free processor idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 		return err
 	}
-	defer func(pool *heavyProcessorPool, target *heavyProcessorPoolItem) {
+	defer func(ctx context.Context, pool *heavyProcessorPool, target *heavyProcessorPoolItem) {
 		errR := pool.receiveProcessorItemToPool(target)
 		if errR != nil {
-			hp.logger.Error(errR)
+			hp.logger.ErrorfWithTracing(ctx, "%s", errR)
 		}
-	}(hp.pool, processorItem)
+	}(ctx, hp.pool, processorItem)
 
-	hp.logger.Infof("User processor id = %d and configNumber = %d", processorItem.GetID(), hp.store.GetNumberConfig())
+	hp.logger.InfofWithTracing(ctx, "User processor id = %d and configNumber = %d", processorItem.GetID(), hp.store.GetNumberConfig())
 	processorItem.Execute()
 
 	return nil

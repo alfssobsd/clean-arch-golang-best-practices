@@ -2,26 +2,28 @@ package agify_api_gateway
 
 import (
 	"clean-arch-golang-best-practices/credit-library/httpclient"
+	"clean-arch-golang-best-practices/credit-library/loggerhelper"
+	"context"
 	"encoding/json"
-	"go.uber.org/zap"
 	"net/url"
 )
 
 const apiURL = "https://api.agify.io/"
 
 type AgifyApiGateway struct {
-	logger       *zap.SugaredLogger
+	logger *loggerhelper.CustomLogger
 }
 
 type IAgifyApiGateway interface {
-	PredicateAgeOfName(name string, country2AlphaId string)
+	PredicateAgeOfName(ctx context.Context, name string, country2AlphaId string) (*PredicateAgeResponseDto, error)
 }
 
-func NewAgifyApiGateway(logger *zap.SugaredLogger) *AgifyApiGateway {
+func NewAgifyApiGateway(logger *loggerhelper.CustomLogger) *AgifyApiGateway {
 	return &AgifyApiGateway{logger: logger}
 }
 
-func (g *AgifyApiGateway) PredicateAgeOfName(name string, country2AlphaId string) (*PredicateAgeResponseDto, error) {
+func (g *AgifyApiGateway) PredicateAgeOfName(ctx context.Context, name string, country2AlphaId string) (*PredicateAgeResponseDto, error) {
+	g.logger.DebugfWithTracing(ctx, "PredicateAgeOfName")
 	queryParams := url.Values{}
 	queryParams.Add("name", name)
 	queryParams.Add("country_id", country2AlphaId)
@@ -39,5 +41,5 @@ func (g *AgifyApiGateway) PredicateAgeOfName(name string, country2AlphaId string
 		return nil, err
 	}
 
-	return &dto,nil
+	return &dto, nil
 }

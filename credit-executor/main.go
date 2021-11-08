@@ -2,18 +2,22 @@ package main
 
 import (
 	"clean-arch-golang-best-practices/credit-executor/utils/appconfig"
+	"clean-arch-golang-best-practices/credit-executor/utils/helpers"
 	"clean-arch-golang-best-practices/credit-library/loggerhelper"
 	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
 )
 
 func main() {
-	logger := loggerhelper.MakeNewZapProductionLogger()
+	logger := loggerhelper.NewCustomLogger()
 	appConfig := appconfig.NewAppConfigurationFromEnvFile(".env")
-	heavyProcessor, _ := heavyprocessor.NewHeavyProcessor(logger.Sugar(), 10)
+	heavyProcessor, _ := heavyprocessor.NewHeavyProcessor(logger, 10)
+	redisClient := helpers.NewRedisClient(appConfig.GetRedisConfig())
 
-	logger.Info("Run credit-executor")
+	//TODO: доделать redis
+	//Разобраться с контекстами
+	logger.InfofNoTracing("Run credit-executor")
 	go func() {
-		MakeBackgroundTaskServer(logger.Sugar(), appConfig, heavyProcessor)
+		MakeBackgroundTaskServer(logger, appConfig, heavyProcessor)
 	}()
-	MakeHttpServer(logger, appConfig, heavyProcessor)
+	MakeHttpServer(logger, appConfig, heavyProcessor, redisClient)
 }

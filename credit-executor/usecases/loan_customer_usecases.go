@@ -2,45 +2,59 @@ package usecases
 
 import (
 	"clean-arch-golang-best-practices/credit-executor/dataproviders/agify_api_gateway"
+	"clean-arch-golang-best-practices/credit-executor/dataproviders/redis_repository"
+	"clean-arch-golang-best-practices/credit-library/loggerhelper"
 	"clean-arch-golang-best-practices/credit-shared-module/dataproviders/main_db_provider"
 	"clean-arch-golang-best-practices/credit-shared-module/utils/heavyprocessor"
-	"go.uber.org/zap"
+	"context"
 	"math/rand"
 )
 
 type LoanCustomerUseCase struct {
-	logger          *zap.SugaredLogger
+	logger          *loggerhelper.CustomLogger
 	heavyProcessor  heavyprocessor.IHeavyProcessor
 	loanRepo        main_db_provider.ILoanRepository
-	agifyApiGateway *agify_api_gateway.AgifyApiGateway
+	agifyApiGateway agify_api_gateway.IAgifyApiGateway
+	cacheRepo       redis_repository.ISessionCacheRepository
 }
 
 type ILoanCustomerUseCase interface {
-	CreateRequestForLoan()
-	CheckLoanRequestStatus()
+	CreateRequestForLoan(ctx context.Context)
+	CheckLoanRequestStatus(ctx context.Context)
 }
 
-func NewLoanCustomerUseCase(logger *zap.SugaredLogger, heavyProcessor heavyprocessor.IHeavyProcessor,
-	agifyApiGateway *agify_api_gateway.AgifyApiGateway, loanRepo main_db_provider.ILoanRepository) ILoanCustomerUseCase {
+func NewLoanCustomerUseCase(logger *loggerhelper.CustomLogger, heavyProcessor heavyprocessor.IHeavyProcessor,
+	agifyApiGateway agify_api_gateway.IAgifyApiGateway, loanRepo main_db_provider.ILoanRepository, cacheRepo redis_repository.ISessionCacheRepository) ILoanCustomerUseCase {
 	uc := LoanCustomerUseCase{
 		logger:          logger,
 		heavyProcessor:  heavyProcessor,
 		loanRepo:        loanRepo,
 		agifyApiGateway: agifyApiGateway,
+		cacheRepo:       cacheRepo,
 	}
 	return &uc
 }
 
-func (uc *LoanCustomerUseCase) CreateRequestForLoan() {
-	uc.logger.Infof("LoanCustomerUseCase.CreateRequestForLoan")
-	_ = uc.heavyProcessor.ExecuteProcessor(rand.Int())
-	uc.loanRepo.CreateRequestLoan()
-	apiDto, _ := uc.agifyApiGateway.PredicateAgeOfName("vasily", "RU")
-	uc.logger.Infof("API %v", apiDto)
+func (uc *LoanCustomerUseCase) CreateRequestForLoan(ctx context.Context) {
+	uc.logger.InfoWithTracing(ctx, "LoanCustomerUseCase.CreateRequestForLoan")
+	_ = uc.heavyProcessor.ExecuteProcessor(ctx, rand.Int())
+	uc.loanRepo.CreateRequestLoan(ctx)
+	apiDto, _ := uc.agifyApiGateway.PredicateAgeOfName(ctx, "vasily", "RU")
+	uc.logger.InfofWithTracing(ctx, "API %v", apiDto)
+	err := uc.cacheRepo.CreateSession(ctx, "SomeKey", "value")
+	if err != nil {
+		return
+	}
 }
 
-func (uc *LoanCustomerUseCase) CheckLoanRequestStatus() {
-	uc.logger.Infof("LoanCustomerUseCase.CheckLoanRequestStatus")
-	_ = uc.heavyProcessor.ExecuteProcessor(rand.Int())
-	uc.loanRepo.CheckRequestLoan()
+func (uc *LoanCustomerUseCase) CheckLoanRequestStatus(ctx context.Context) {
+	uc.logger.InfofWithTracing(ctx, "LoanCustomerUseCase.CheckLoanRequestStatus")
+	_ = uc.heavyProcessor.ExecuteProcessor(ctx, rand.Int())
+	uc.loanRepo.CheckRequestLoan(ctx)
+	val, err := uc.cacheRepo.GetSession(ctx, "SomeKey")
+	if err != nil {
+		return
+	}
+	uc.logger.InfofWithTracing(ctx, "LoanCustomerUseCase.CreateRequestForLoan session %s", val)
+
 }
