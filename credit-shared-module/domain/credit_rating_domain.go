@@ -20,7 +20,7 @@ func NewCreditRatingDomain(logger *loggerhelper.CustomLogger) ICreditRatingDomai
 }
 
 func (crd CreditRatingDomain) CalculateCreditRating(ctx context.Context, dateOfBirth time.Time, annualIncomeMicros int64) int {
-	crd.logger.InfofWithTracing(ctx, "CreditRatingDomain.CalculateCreditRating")
+	crd.logger.SugarWithTracing(ctx).Infof("CreditRatingDomain.CalculateCreditRating")
 	today := time.Now()
 	age := math.Floor(today.Sub(dateOfBirth).Hours() / 24 / 365)
 	return int(math.Sqrt(age) - (float64(annualIncomeMicros)/12)*0.3)

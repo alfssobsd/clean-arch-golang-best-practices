@@ -9,6 +9,6 @@ func main() {
 	logger := loggerhelper.NewCustomLogger()
 	appConfig := appconfig.NewAppConfigurationFromEnvFile(".env")
 
-	logger.InfofNoTracing("Run credit-adm-executor")
+	logger.NoTracing().Info("Run credit-adm-executor")
 	MakeHttpServer(logger, appConfig)
 }

@@ -37,7 +37,7 @@ func (c *LoanCustomerAdmHttpController) makeRoutes() {
 }
 
 func (c *LoanCustomerAdmHttpController) calculateRating(ctx echo.Context) error {
-	c.logger.InfofWithTracing(ctx.Request().Context(), "Calculate Rating")
+	c.logger.SugarWithTracing(ctx.Request().Context()).Infof("Calculate Rating")
 	ucResult := c.loanCustomerAdmUseCase.CalculateRatingByRequest(ctx.Request().Context(), rand.Int())
 
 	response := CalculateRatingHttpResponse{}

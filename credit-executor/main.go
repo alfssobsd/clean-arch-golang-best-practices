@@ -11,11 +11,9 @@ func main() {
 	logger := loggerhelper.NewCustomLogger()
 	appConfig := appconfig.NewAppConfigurationFromEnvFile(".env")
 	heavyProcessor, _ := heavyprocessor.NewHeavyProcessor(logger, 10)
-	redisClient := helpers.NewRedisClient(appConfig.GetRedisConfig())
+	redisClient := helpers.NewRedisClient(logger, appConfig.GetRedisConfig())
 
-	//TODO: доделать redis
-	//Разобраться с контекстами
-	logger.InfofNoTracing("Run credit-executor")
+	logger.SugarNoTracing().Infof("Run credit-executor")
 	go func() {
 		MakeBackgroundTaskServer(logger, appConfig, heavyProcessor)
 	}()

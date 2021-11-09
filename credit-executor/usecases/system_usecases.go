@@ -25,7 +25,7 @@ func NewSystemUseCase(logger *loggerhelper.CustomLogger, heavyProcessor heavypro
 }
 
 func (uc *SystemUseCase) UpdateHeavyProcessorConfiguration(ctx context.Context) error {
-	uc.logger.InfofWithTracing(ctx, "Update Heavy Processor configuration")
+	uc.logger.WithTracing(ctx).Info("Update Heavy Processor configuration")
 	_ = uc.heavyProcessor.LoadNewConfigurationForProcessor(ctx, rand.Int())
 	return nil
 }

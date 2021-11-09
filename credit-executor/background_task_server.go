@@ -25,10 +25,10 @@ func MakeBackgroundTaskServer(logger *loggerhelper.CustomLogger, appConfig *appc
 		errorChain <- exchangeRateTask2.RunTask(context.Background())
 	}()
 
-	logger.InfofNoTracing("Started all background processes")
+	logger.NoTracing().Info("Started all background processes")
 	err := <-errorChain
 	if err != nil {
-		logger.ErrorfNoTracing("Background task is stopped, misbehavior")
+		logger.NoTracing().Info("Background task is stopped, misbehavior")
 		os.Exit(1)
 	}
 }

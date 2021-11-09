@@ -23,7 +23,7 @@ func NewAgifyApiGateway(logger *loggerhelper.CustomLogger) *AgifyApiGateway {
 }
 
 func (g *AgifyApiGateway) PredicateAgeOfName(ctx context.Context, name string, country2AlphaId string) (*PredicateAgeResponseDto, error) {
-	g.logger.DebugfWithTracing(ctx, "PredicateAgeOfName")
+	g.logger.SugarWithTracing(ctx).Debug("PredicateAgeOfName")
 	queryParams := url.Values{}
 	queryParams.Add("name", name)
 	queryParams.Add("country_id", country2AlphaId)

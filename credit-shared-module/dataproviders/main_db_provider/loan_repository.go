@@ -27,11 +27,11 @@ func NewLoanRepository(logger *loggerhelper.CustomLogger, dbConfig DatabaseConfi
 }
 
 func (repo *LoanRepository) CreateRequestLoan(ctx context.Context) {
-	repo.logger.InfofWithTracing(ctx, "LoanRepository.CreateRequestLoan")
+	repo.logger.SugarWithTracing(ctx).Infof("LoanRepository.CreateRequestLoan")
 }
 
 func (repo *LoanRepository) GetRequestLoanByID(ctx context.Context, id int) LoanRequestModel {
-	repo.logger.InfofWithTracing(ctx, "LoanRepository.GetRequestLoanByID")
+	repo.logger.SugarWithTracing(ctx).Infof("LoanRepository.GetRequestLoanByID")
 	layoutISO := "2006-01-02"
 	date := "1988-03-01"
 	BorrowerDateOfBirth, _ := time.Parse(layoutISO, date)
@@ -39,5 +39,5 @@ func (repo *LoanRepository) GetRequestLoanByID(ctx context.Context, id int) Loan
 }
 
 func (repo *LoanRepository) CheckRequestLoan(ctx context.Context) {
-	repo.logger.InfofWithTracing(ctx, "LoanRepository.CheckRequestLoan")
+	repo.logger.SugarWithTracing(ctx).Infof("LoanRepository.CheckRequestLoan")
 }

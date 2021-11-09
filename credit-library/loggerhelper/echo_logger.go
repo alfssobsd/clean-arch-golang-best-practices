@@ -35,11 +35,11 @@ func EchoCustomLogger(log *CustomLogger) echo.MiddlewareFunc {
 			logString := fmt.Sprintf("%s %s %s status=%d", request.Method, request.RequestURI, request.Proto, statusCode)
 			switch {
 			case statusCode >= 500:
-				log.ErrorWithTracing(c.Request().Context(), logString, zapFields...)
+				log.WithTracing(c.Request().Context()).Error(logString, zapFields...)
 			case statusCode >= 400:
-				log.WarnWithTracing(c.Request().Context(), logString, zapFields...)
+				log.WithTracing(c.Request().Context()).Warn(logString, zapFields...)
 			default:
-				log.InfoWithTracing(c.Request().Context(), logString, zapFields...)
+				log.WithTracing(c.Request().Context()).Info(logString, zapFields...)
 			}
 
 			return nil

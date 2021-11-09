@@ -27,7 +27,7 @@ func NewLoanCustomerAdmUseCase(logger *loggerhelper.CustomLogger, creditRatingDo
 }
 
 func (uc *LoanCustomerAdmUseCase) CalculateRatingByRequest(ctx context.Context, requestId int) LoanCustomerRatingOutDto {
-	uc.logger.InfofWithTracing(ctx, "LoanCustomerAdmUseCase.CalculateRatingByRequest")
+	uc.logger.SugarWithTracing(ctx).Info("LoanCustomerAdmUseCase.CalculateRatingByRequest")
 	loanRequestModel := uc.loanRepo.GetRequestLoanByID(ctx, requestId)
 	rating := uc.creditRatingDomain.CalculateCreditRating(ctx, loanRequestModel.BorrowerDateOfBirth, loanRequestModel.AnnualIncomeMicros)
 

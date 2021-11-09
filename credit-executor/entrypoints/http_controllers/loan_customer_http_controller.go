@@ -37,14 +37,14 @@ func (c *LoanCustomerHttpController) makeRoutes() {
 }
 
 func (c *LoanCustomerHttpController) createRequestForLoan(ctx echo.Context) error {
-	c.logger.InfoWithTracing(ctx.Request().Context(), "Create request for loan")
+	c.logger.SugarWithTracing(ctx.Request().Context()).Infof("Create request for loan")
 	c.loanCustomerUseCase.CreateRequestForLoan(ctx.Request().Context())
 
 	return ctx.JSON(http.StatusCreated, "CREATED")
 }
 
 func (c *LoanCustomerHttpController) checkLoanRequestStatus(ctx echo.Context) error {
-	c.logger.InfofWithTracing(ctx.Request().Context(), "Check loan request status")
+	c.logger.SugarWithTracing(ctx.Request().Context()).Infof("Check loan request status")
 	c.loanCustomerUseCase.CheckLoanRequestStatus(ctx.Request().Context())
 
 	return ctx.JSON(http.StatusOK, "IN PROGRESS")

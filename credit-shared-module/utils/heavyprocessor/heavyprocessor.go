@@ -18,7 +18,7 @@ type IHeavyProcessor interface {
 }
 
 func NewHeavyProcessor(logger *loggerhelper.CustomLogger, size int) (*HeavyProcessor, error) {
-	logger.InfofNoTracing("Create new pool for heavyprocessor (size %d)", size)
+	logger.SugarNoTracing().Infof("Create new pool for heavyprocessor (size %d)", size)
 	pool, err := newHeavyProcessorPool(size)
 	if err != nil {
 		return nil, err
@@ -32,27 +32,27 @@ func NewHeavyProcessor(logger *loggerhelper.CustomLogger, size int) (*HeavyProce
 }
 
 func (hp *HeavyProcessor) LoadNewConfigurationForProcessor(ctx context.Context, number int) error {
-	hp.logger.InfofWithTracing(ctx, "Set new number config to store %d", number)
+	hp.logger.SugarWithTracing(ctx).Infof("Set new number config to store %d", number)
 	hp.store.SetNewNumberConfig(number)
 	return nil
 }
 
 func (hp *HeavyProcessor) ExecuteProcessor(ctx context.Context, number int) error {
-	hp.logger.InfofWithTracing(ctx, "Execute task with number %d", number)
-	hp.logger.InfofWithTracing(ctx, "Pool status idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
+	hp.logger.SugarWithTracing(ctx).Infof("Execute task with number %d", number)
+	hp.logger.SugarWithTracing(ctx).Infof("Pool status idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 	processorItem, err := hp.pool.getProcessorItemFromPool()
 	if err != nil {
-		hp.logger.ErrorfWithTracing(ctx, "No free processor idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
+		hp.logger.SugarWithTracing(ctx).Errorf("No free processor idle=%d/usage=%d", len(hp.pool.idle), len(hp.pool.active))
 		return err
 	}
 	defer func(ctx context.Context, pool *heavyProcessorPool, target *heavyProcessorPoolItem) {
 		errR := pool.receiveProcessorItemToPool(target)
 		if errR != nil {
-			hp.logger.ErrorfWithTracing(ctx, "%s", errR)
+			hp.logger.SugarWithTracing(ctx).Errorf("%s", errR)
 		}
 	}(ctx, hp.pool, processorItem)
 
-	hp.logger.InfofWithTracing(ctx, "User processor id = %d and configNumber = %d", processorItem.GetID(), hp.store.GetNumberConfig())
+	hp.logger.SugarWithTracing(ctx).Infof("User processor id = %d and configNumber = %d", processorItem.GetID(), hp.store.GetNumberConfig())
 	processorItem.Execute()
 
 	return nil

@@ -36,11 +36,11 @@ func NewLoanCustomerUseCase(logger *loggerhelper.CustomLogger, heavyProcessor he
 }
 
 func (uc *LoanCustomerUseCase) CreateRequestForLoan(ctx context.Context) {
-	uc.logger.InfoWithTracing(ctx, "LoanCustomerUseCase.CreateRequestForLoan")
+	uc.logger.SugarWithTracing(ctx).Infof("LoanCustomerUseCase.CreateRequestForLoan")
 	_ = uc.heavyProcessor.ExecuteProcessor(ctx, rand.Int())
 	uc.loanRepo.CreateRequestLoan(ctx)
 	apiDto, _ := uc.agifyApiGateway.PredicateAgeOfName(ctx, "vasily", "RU")
-	uc.logger.InfofWithTracing(ctx, "API %v", apiDto)
+	uc.logger.SugarWithTracing(ctx).Infof("API %v", apiDto)
 	err := uc.cacheRepo.CreateSession(ctx, "SomeKey", "value")
 	if err != nil {
 		return
@@ -48,13 +48,13 @@ func (uc *LoanCustomerUseCase) CreateRequestForLoan(ctx context.Context) {
 }
 
 func (uc *LoanCustomerUseCase) CheckLoanRequestStatus(ctx context.Context) {
-	uc.logger.InfofWithTracing(ctx, "LoanCustomerUseCase.CheckLoanRequestStatus")
+	uc.logger.SugarWithTracing(ctx).Infof("LoanCustomerUseCase.CheckLoanRequestStatus")
 	_ = uc.heavyProcessor.ExecuteProcessor(ctx, rand.Int())
 	uc.loanRepo.CheckRequestLoan(ctx)
 	val, err := uc.cacheRepo.GetSession(ctx, "SomeKey")
 	if err != nil {
 		return
 	}
-	uc.logger.InfofWithTracing(ctx, "LoanCustomerUseCase.CreateRequestForLoan session %s", val)
+	uc.logger.SugarWithTracing(ctx).Infof("LoanCustomerUseCase.CreateRequestForLoan session %s", val)
 
 }

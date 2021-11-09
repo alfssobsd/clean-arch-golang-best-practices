@@ -24,10 +24,10 @@ func NewHeavyProcessorWatcherBackgroundTask(logger *loggerhelper.CustomLogger, s
 }
 
 func (task *HeavyProcessorWatcherBackgroundTask) RunTask(ctx context.Context) error {
-	task.logger.InfofWithTracing(ctx, "Watcher = %d, Start HeavyProcessorWatcherBackgroundTask with timeout = %s", task.watcherId, task.waitTimeout.String())
+	task.logger.SugarWithTracing(ctx).Infof("Watcher = %d, Start HeavyProcessorWatcherBackgroundTask with timeout = %s", task.watcherId, task.waitTimeout.String())
 	for {
 		time.Sleep(task.waitTimeout)
-		task.logger.InfofWithTracing(ctx, "Watcher = %d, Update Heavy Processor configuration", task.watcherId)
+		task.logger.SugarWithTracing(ctx).Infof("Watcher = %d, Update Heavy Processor configuration", task.watcherId)
 
 		err := task.systemUseCase.UpdateHeavyProcessorConfiguration(ctx)
 		if err != nil {
